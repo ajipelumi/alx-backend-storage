@@ -1,4 +1,4 @@
-## Advanced MySQL
+## MySQL
 
 This repository contains the codebase for ALX Backend Curriculum - MySQL.
 The project is designed to help us understand how to use MySQL in a more advanced way.
