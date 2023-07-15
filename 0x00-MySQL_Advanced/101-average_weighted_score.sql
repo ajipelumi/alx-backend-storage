@@ -29,7 +29,17 @@ BEGIN
         END IF;
 
         -- Compute the average weighted score for the user
-        CALL ComputeAverageWeightedScoreForUser(user_id);
+        SELECT SUM(`score` * `projects`.`weight`) / SUM(`projects`.`weight`) INTO average_weighted_score
+        FROM `corrections`
+        JOIN `projects`
+        ON `corrections`.`project_id` = `projects`.`id`
+        GROUP BY `corrections`.`user_id`
+        HAVING `corrections`.`user_id` = user_id;
+
+        -- Update users table
+        UPDATE `users`
+        SET `average_score` = average_weighted_score
+        WHERE `id` = user_id;
     END LOOP;
 
     -- Close the cursor
