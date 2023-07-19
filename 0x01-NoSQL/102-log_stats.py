@@ -22,22 +22,10 @@ if __name__ == "__main__":
 
     print("IPs:")
     ips = logs_collection.aggregate([
-        {
-            "$match": {}
-        },
-        {
-            "$group": {
-                "_id": "$ip",
-                "count": {"$count": {}}
-            }
-        },
-        {
-            "$sort": {"count": -1}
-        },
-        {
-            "$limit": 10
-        }
+        {"$group": {"_id": "$ip", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 10}
     ])
 
     for ip in ips:
-        print("\t{}: {}".format(ip.get('_id'), ip.get('count')))
+        print("\t{}: {}".format(ip.get("_id"), ip.get("count")))
