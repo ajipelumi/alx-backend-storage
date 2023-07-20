@@ -2,7 +2,7 @@
 """ Cache module. """
 import redis
 import uuid
-from typing import Any
+from typing import Union
 
 
 class Cache:
@@ -13,7 +13,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    def store(self, data: Any) -> str:
+    def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generate a random key, store input data in Redis using the random key
         and return the key.
