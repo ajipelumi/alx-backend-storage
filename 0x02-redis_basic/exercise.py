@@ -60,7 +60,8 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+    def get(self, key: str, fn: Optional[Callable] =
+            None) -> Union[str, bytes, int, float]:
         """
         Convert data back to desired format.
         """
@@ -96,4 +97,4 @@ def replay(method: Callable):
 
     for input, output in zip(inputs, outputs):
         print("{}(*{}) -> {}".format(key, input.decode('utf-8'),
-                                     output.decode('utf-8')))                      
+                                     output.decode('utf-8')))
