@@ -20,6 +20,7 @@ def count_calls(method: Callable) -> Callable:
 
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """
     Store the history of inputs and outputs for a particular function.
@@ -79,3 +80,20 @@ class Cache:
     def get_int(self, key: str) -> int:
         """ Get an integer value from Redis. """
         return self.get(key, int)
+
+
+def replay(method: Callable):
+    """
+    Display the history of calls of a particular function.
+    """
+    r = redis.Redis()
+    key = method.__qualname__
+    count = r.get(key).decode('utf-8')
+    inputs = r.lrange(key + ":inputs", 0, -1)
+    outputs = r.lrange(key + ":outputs", 0, -1)
+
+    print("{} was called {} times:".format(key, count))
+
+    for input, output in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(key, input.decode('utf-8'),
+                                     output.decode('utf-8')))                      
