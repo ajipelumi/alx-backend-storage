@@ -2,19 +2,40 @@
 """ Cache module. """
 import redis
 import requests
+from typing import Callable
+from functools import wraps
 
 
+def count_requests(method: Callable) -> Callable:
+    """
+    Track how many times a particular URL was accessed in the key
+    "count:{url}" and return the page HTML content.
+    """
+
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        """ Wrapper function. """
+        url = args[0]
+        key = "count:" + url
+        r = redis.Redis()
+        r.incr(key)
+        page = r.get(url)
+        if page:
+            return page.decode('utf-8')
+
+        page = method(*args, **kwargs)
+        r.setex(url, 10, page)
+        return page
+
+    return wrapper
+
+
+@count_requests
 def get_page(url: str) -> str:
     """
     Get the HTML content of a particular URL and return it.
     """
     r = requests.get(url)
     html = r.text
-
-    redis_client = redis.Redis()
-    redis_client.setex(url, 10, html)
-
-    count = "count:" + url
-    redis_client.incr(count)
 
     return html
