@@ -30,7 +30,6 @@ def count_requests(method: Callable) -> Callable:
     return wrapper
 
 
-@count_requests
 def get_page(url: str) -> str:
     """
     Get the HTML content of a particular URL and return it.
